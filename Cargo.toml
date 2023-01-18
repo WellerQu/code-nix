@@ -1,0 +1,12 @@
+[package]
+name = "code-nix"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "4.1.1"
+configparser = "3.0.2"
+handlebars = "4.3.6"
+yaml-rust = "0.4.5"
