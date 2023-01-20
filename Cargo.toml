@@ -1,5 +1,5 @@
 [package]
-name = "code-nix"
+name = "code_nix"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,3 +10,6 @@ clap = "4.1.1"
 configparser = "3.0.2"
 handlebars = "4.3.6"
 yaml-rust = "0.4.5"
+
+[dev-dependencies]
+ctor = "0.1.26"
