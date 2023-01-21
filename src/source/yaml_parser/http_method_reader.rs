@@ -1,41 +1,54 @@
 use crate::source::metadata_context::{HttpMethod, MINE};
-use std::collections::HashMap;
 use yaml_rust::Yaml;
 
 impl HttpMethod {
-    pub fn from_yaml_doc(doc: &Yaml) -> HashMap<String, Self> {
-        let mut method_map: HashMap<String, HttpMethod> = HashMap::new();
+    pub fn from_yaml_doc(doc: &Yaml) -> Vec<(String, Self)> {
+        let method_hash = doc.as_hash().expect("read methods failed");
+        let methods: [&str; 5] = ["get", "post", "patch", "put", "delete"];
 
-        let method_schema = doc.as_hash().expect("read methods failed");
+        let mut method_list = vec![];
+        for method_str in methods {
+            let method_name = method_str.to_string();
+            let method_key = &Yaml::String(method_name.clone());
+            let summary_key = &Yaml::String(String::from("summary"));
+            let produces_key = &Yaml::String(String::from("produces"));
 
-        for (method, doc) in method_schema {
-            method_map
-                .entry(String::from(method.as_str().expect("read method failed")))
-                .or_insert(HttpMethod {
-                    summary: doc["summary"]
-                        .as_str()
-                        .and_then(read_summary)
-                        .unwrap_or(String::from("")),
-                    produces: doc["produces"]
-                        .as_vec()
-                        .and_then(read_produces)
-                        .unwrap_or(vec![]),
-                });
+            if !method_hash.contains_key(method_key) {
+                continue;
+            }
+
+            let method = method_hash.get(method_key);
+
+            let summary = method
+                .and_then(read_hash_value(summary_key))
+                .and_then(read_summary)
+                .unwrap_or(String::from(""));
+            let produces = method
+                .and_then(read_hash_value(produces_key))
+                .and_then(read_produces)
+                .unwrap_or(vec![]);
+
+            method_list.push((method_name, HttpMethod { summary, produces }))
         }
 
-        method_map
+        method_list
     }
 }
 
-fn read_produces(vec: &Vec<Yaml>) -> Option<Vec<MINE>> {
-    let mine_types = vec
-        .into_iter()
-        .map(|item| MINE(item.as_str().unwrap_or("text/html").to_string()))
-        .collect();
-
-    Some(mine_types)
+fn read_hash_value<'a>(hash_key: &'a Yaml) -> impl Fn(&'a Yaml) -> Option<&'a Yaml> {
+    |yaml: &Yaml| yaml.as_hash().and_then(|hash| hash.get(hash_key))
 }
 
-fn read_summary(str: &str) -> Option<String> {
-    Some(str.to_string())
+fn read_produces(yaml: &Yaml) -> Option<Vec<MINE>> {
+    yaml.as_vec().and_then(|vec| {
+        Some(
+            vec.into_iter()
+                .map(|item| MINE(item.as_str().unwrap_or("text/html").to_string()))
+                .collect(),
+        )
+    })
+}
+
+fn read_summary(yaml: &Yaml) -> Option<String> {
+    yaml.as_str().and_then(|s| Some(s.to_string()))
 }

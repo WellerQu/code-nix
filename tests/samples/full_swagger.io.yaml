@@ -21,9 +21,11 @@ paths:
   /users:
     get:
       summary: Returns a list of users.
-      description: Optional extended description in Markdown.
+      description: Hello Get
       tags:
         - fe_ns:user
+      produces:
+        - application/json
       parameters: 
         - in: query
           name: page_index
@@ -37,22 +39,12 @@ paths:
         200:
           description: OK
           schema:
-            allOf:
-              - $ref: "#/definitions/ResultWrapper"
-              - type: object
-                properties: 
-                  data:
-                    allOf:
-                      - $ref: "#/definitions/PaginationWrapper"
-                        properties: 
-                          list:
-                            type: array
-                            items:
-                              $ref: "#/definitions/User"
+            $ref: "#/definitions/UsersResponse"
 
+  /user:
     post:
       summary: Post a new user
-      description: Hello World
+      description: Hello Post
       tags:
         - fe_ns:user
       parameters:
@@ -63,7 +55,9 @@ paths:
       responses:
         200:
           description: OK
-  
+          schema:
+            $ref: "#/definitions/VoidResponse"
+
   /users/{userId}:
     get:
       summary: Returns a user
@@ -81,7 +75,39 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/User'
-  
+
+    patch:
+      summary: Patch a user
+      description: Hello Patch
+      tags:
+        - fe_ns:user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+
+    delete:
+      summary: Remove a user
+      description: Hell Delete
+      tags:
+        - fe_ns:user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/VoidResponse'
+
   /teachers:
     get:
       summary: Returns a list of teacher.
@@ -101,20 +127,48 @@ paths:
         200:
           description: OK
           schema:
-            allOf:
-              - $ref: "#/definitions/ResultWrapper"
-              - type: object
-                properties: 
-                  data:
-                    allOf:
-                      - $ref: "#/definitions/PaginationWrapper"
-                        properties: 
-                          list:
-                            type: array
-                            items:
-                              $ref: "#/definitions/Teacher"
+            $ref: "#/definitions/TeachersResponse"
 
 definitions:
+  VoidResponse:
+    type: object
+    allOf:
+      - $ref: "#/definitions/ResultWrapper"
+      - type: object
+        properties: 
+          data: 
+            default: null
+
+  UsersResponse:
+    type: object
+    allOf:
+      - $ref: "#/definitions/ResultWrapper"
+      - type: object
+        properties: 
+          data:
+            allOf:
+              - $ref: "#/definitions/PaginationWrapper"
+                properties: 
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/definitions/User"
+
+  TeachersResponse:
+    type: object
+    allOf:
+      - $ref: "#/definitions/ResultWrapper"
+      - type: object
+        properties: 
+          data:
+            allOf:
+              - $ref: "#/definitions/PaginationWrapper"
+                properties: 
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Teacher"
+
   ResultWrapper:
     properties: 
       code:
@@ -145,9 +199,7 @@ definitions:
         type: integer
     # Both properties are required
     required:  
-      - id
       - name
-      - age
     
   Teacher:
     properties:
@@ -162,6 +214,4 @@ definitions:
           - female
     # Both properties are required
     required:  
-      - id
       - name
-      - sex

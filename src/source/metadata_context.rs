@@ -1,4 +1,4 @@
-use std::{fmt::Debug, collections::HashMap};
+use std::fmt::Debug;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct  Field {
@@ -23,7 +23,7 @@ pub struct HttpMethod {
 #[derive(Debug, PartialEq, Eq)]
 pub struct API {
     pub url: String,
-    pub methods: HashMap<String, HttpMethod>
+    pub methods: Vec<(String, HttpMethod)>
 }
 
 #[derive(Debug, PartialEq, Eq)]
