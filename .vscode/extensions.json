@@ -1,6 +1,10 @@
 {
   "recommendations": [
     "rust-lang.rust-analyzer",
-    "vadimcn.vscode-lldb"
+    "vadimcn.vscode-lldb",
+    "emsav.swagger-validator",
+    "redhat.vscode-yaml",
+    "bungcip.better-toml",
+    "42crunch.vscode-openapi"
   ]
 }

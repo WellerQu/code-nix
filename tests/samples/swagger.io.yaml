@@ -1,4 +1,4 @@
-# swagger: "2.0"
+swagger: "2.0"
 info:
   title: Sample API
   description: API description in Markdown.
@@ -7,25 +7,161 @@ host: api.example.com
 basePath: /v1
 schemes:
   - https
+
+produces:
+  - application/json
+consumes:
+  - application/json
+
+tags:
+  - name: fe_ns:user
+  - name: fe_ns:teacher
+
 paths:
   /users:
     get:
       summary: Returns a list of users.
       description: Optional extended description in Markdown.
       tags:
-        - fe_ns:default
-      produces:
-        - application/json
+        - fe_ns:user
+      parameters: 
+        - in: query
+          name: page_index
+          required: true
+          type: integer
+        - in: query
+          name: page_size
+          default: 10
+          type: integer
       responses:
         200:
           description: OK
+          schema:
+            allOf:
+              - $ref: "#/definitions/ResultWrapper"
+              - type: object
+                properties: 
+                  data:
+                    allOf:
+                      - $ref: "#/definitions/PaginationWrapper"
+                        properties: 
+                          list:
+                            type: array
+                            items:
+                              $ref: "#/definitions/User"
+
+    post:
+      summary: Post a new user
+      description: Hello World
+      tags:
+        - fe_ns:user
+      parameters:
+        - in: body
+          name: new user instance
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        200:
+          description: OK
+  
+  /users/{userId}:
+    get:
+      summary: Returns a user
+      description: Optional extended description in Markdown.
+      tags:
+        - fe_ns:user
+      parameters: 
+        - in: path
+          name: userId
+          required: true
+          type: integer
+
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
   
   /teachers:
     get:
       summary: Returns a list of teacher.
       description: Some desc
-      produces:
-        - application/json
+      tags:
+        - fe_ns:teacher
+      parameters:
+        - in: query
+          name: page_index
+          required: true
+          type: integer
+        - in: query
+          name: page_size
+          default: 10
+          type: integer
       responses:
         200:
           description: OK
+          schema:
+            allOf:
+              - $ref: "#/definitions/ResultWrapper"
+              - type: object
+                properties: 
+                  data:
+                    allOf:
+                      - $ref: "#/definitions/PaginationWrapper"
+                        properties: 
+                          list:
+                            type: array
+                            items:
+                              $ref: "#/definitions/Teacher"
+
+definitions:
+  ResultWrapper:
+    properties: 
+      code:
+        type: integer
+      msg:
+        type: string
+      data:
+        type: object
+
+  PaginationWrapper:
+    properties: 
+      current:
+        type: integer
+      total:
+        type: integer
+      list:
+        type: array
+        items:
+          type: object
+
+  User:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      age:
+        type: integer
+    # Both properties are required
+    required:  
+      - id
+      - name
+      - age
+    
+  Teacher:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      sex:
+        type: string
+        enum:
+          - male
+          - female
+    # Both properties are required
+    required:  
+      - id
+      - name
+      - sex
