@@ -12,10 +12,14 @@ impl HttpMethod {
             method_map
                 .entry(String::from(method.as_str().expect("read method failed")))
                 .or_insert(HttpMethod {
+                    summary: doc["summary"]
+                        .as_str()
+                        .and_then(read_summary)
+                        .unwrap_or(String::from("")),
                     produces: doc["produces"]
                         .as_vec()
                         .and_then(read_produces)
-                        .expect("read produces failed"),
+                        .unwrap_or(vec![]),
                 });
         }
 
@@ -30,4 +34,8 @@ fn read_produces(vec: &Vec<Yaml>) -> Option<Vec<MINE>> {
         .collect();
 
     Some(mine_types)
+}
+
+fn read_summary(str: &str) -> Option<String> {
+    Some(str.to_string())
 }
