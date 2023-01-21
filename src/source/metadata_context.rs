@@ -16,6 +16,7 @@ pub struct MINE(pub String);
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct HttpMethod {
+    pub summary: String,
     pub produces: Vec<MINE>
 }
 

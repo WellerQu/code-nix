@@ -30,6 +30,7 @@ mod source_parser_test {
                 url: String::from("/users"),
                 methods: HashMap::from([
                     (String::from("get"), HttpMethod {
+                        summary: String::from("Returns a list of users."),
                         produces: vec![MINE(String::from("application/json"))]
                     })
                 ])
@@ -38,6 +39,7 @@ mod source_parser_test {
                 url: String::from("/teachers"),
                 methods: HashMap::from([
                     (String::from("get"), HttpMethod {
+                        summary: String::from("Returns a list of teacher."),
                         produces: vec![MINE(String::from("application/json"))]
                     })
                 ])
