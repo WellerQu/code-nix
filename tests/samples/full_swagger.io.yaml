@@ -27,14 +27,8 @@ paths:
       produces:
         - application/json
       parameters: 
-        - in: query
-          name: page_index
-          required: true
-          type: integer
-        - in: query
-          name: page_size
-          default: 10
-          type: integer
+        - $ref: "#/parameters/PageIndexRequest"
+        - $ref: "#/parameters/PageSizeRequest"
       responses:
         200:
           description: OK
@@ -48,10 +42,7 @@ paths:
       tags:
         - fe_ns:user
       parameters:
-        - in: body
-          name: new user instance
-          schema:
-            $ref: "#/definitions/User"
+        - $ref: "#/parameters/PostUserRequest"
       responses:
         200:
           description: OK
@@ -115,19 +106,34 @@ paths:
       tags:
         - fe_ns:teacher
       parameters:
-        - in: query
-          name: page_index
-          required: true
-          type: integer
-        - in: query
-          name: page_size
-          default: 10
-          type: integer
+        - $ref: "#/parameters/PageIndexRequest"
+        - $ref: "#/parameters/PageSizeRequest"
       responses:
         200:
           description: OK
           schema:
             $ref: "#/definitions/TeachersResponse"
+
+parameters:
+  PageIndexRequest:
+    in: query
+    name: page_index
+    type: integer
+    required: false
+    default: 1
+    minimum: 1
+  PageSizeRequest:
+    in: query
+    name: page_size
+    type: integer
+    required: false
+    default: 10
+    minimum: 1
+  PostUserRequest:
+    in: body
+    name: "new user"
+    schema:
+      $ref: "#/definitions/User"
 
 definitions:
   VoidResponse:

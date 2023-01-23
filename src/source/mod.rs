@@ -1,15 +1,16 @@
 pub(crate) mod yaml_parser;
-pub(crate) mod metadata_context;
+pub(crate) mod metadata;
 
-pub use crate::source::metadata_context::{ SourceParser, MetadataContext, API, HttpMethod, MINE };
-pub use crate::source::yaml_parser::source_parser::YamlSourceParser;
+pub use crate::source::metadata::{ MetadataParser, Metadata, API, HttpMethod, MINE };
+
+use crate::source::yaml_parser::parser::YamlDocParser;
 
 pub enum ParserType {
     YamlParser,
 }
 
-pub fn create_parser<'a>(pt: ParserType) -> &'a impl SourceParser {
+pub fn create_parser<'a>(pt: ParserType) -> &'a impl MetadataParser {
     match pt {
-        ParserType::YamlParser => YamlSourceParser::create(),
+        ParserType::YamlParser => YamlDocParser::new()
     }
 }

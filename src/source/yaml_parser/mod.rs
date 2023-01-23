@@ -1,5 +1,3 @@
-pub mod source_parser;
-pub mod api_reader;
-pub mod model_reader;
+pub mod parser;
 
-mod http_method_reader;
+mod open_api;
